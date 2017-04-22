@@ -27,23 +27,37 @@ def getScores(jsonObject):
             scoreArray["disgust"] = score["score"]
     return scoreArray
 
-#This function takes an value and returns a string,
-#  depending on the raiting.
-def getRespondsMessage(largestScore):
-    if (largestScore < 0.4):
-        return "Less then 0.4"
-    elif (largestScore < 0.5):
-        return "less then 0.5"
-    else:
-        return "higher then 0.5."
+#This function takes an value and returns a string and a boolean value,
+#  depending on the value it gets.
+def getRespondsMessage(name, largestScore):
+    #Angry scores
+    if (name == "anger"):
+        if (largestScore < 0.4):
+            return ("",True)
+        elif (largestScore < 0.5):
+            return ("You seem slightly angry, you will have to rewrite your message, to be allowed to send it.",False)
+        else:
+            return ("You seem too angry, this message might offend people, or put someone in distress. Please rewirte it.",False)
+    #disgust scores.
+    elif (name == "disgust"):
+        if (largestScore < 0.4):
+            return ("", True)
+        elif (largestScore < 0.5):
+            return ("You seem slightly disgusted, you will have to rewrite your message, to be allowed to send it.", False)
+        else:
+            return ("You seem too disgusted, this message might offend people or put someone in distress. Please rewrite it.",False)
 
 #This function call the remaining functions.
 #It takes a string, and returns a string descriping if its good or if its bad.
 def theAnalyzer(inputString):
     bla = getAnalyzeJSON(inputString)
     bip = getScores(bla["document_tone"]["tone_categories"][0]["tones"])
-    print(getRespondsMessage(max(bip.values())))
-    return getRespondsMessage(max(bip.values()))
+
+    name = max(bip, key=lambda key: bip[key])
+
+    print(getRespondsMessage(name, bip[name]))
+    return getRespondsMessage(name, bip[name])
+
 
 #test call
-theAnalyzer("i fucking love you")
+behe = theAnalyzer("i fucking love you")
