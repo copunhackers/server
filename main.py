@@ -22,6 +22,10 @@ class User(db.Model):
 def index():
     return "Hello world"
 
+@app.route('/drop', methods=['GET', 'POST'])
+def dropMessage():
+    return "Droping message"
+
 # Save e-mail to database and send to success page
 @app.route('/test', methods=['GET'])
 def prereg():

@@ -16,7 +16,7 @@ CREATE TABLE MESSAGES (
     user_id          int,
     creation_time    bigint,
     expiry_time      bigint,
-    location         geography(POINT,4326),
+    location         geography,
     PRIMARY KEY (id),
     FOREIGN KEY (user_id) REFERENCES USERS(id)
 );
