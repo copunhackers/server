@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
+from geoalchemy2.types import Geometry
+from stringAnalyzer.analyzer import theAnalyzer
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://copunhackers:hack@localhost/copunhackersDB'
@@ -9,7 +11,7 @@ db = SQLAlchemy(app)
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120), unique=True)
+    name = db.Column(db.Text)
 
     def __init__(self, name):
         self.name = name
@@ -17,10 +19,15 @@ class User(db.Model):
     def __repr__(self):
         return '<Name %r>' % self.name
 
-#  class Message(db.Model):
-#      __tablename__ = 'messages'
-#      id = db.Column(db.Integer, primary_key=True)
-#      expiry_time = db.Column(db.BigInteger)
+class Message(db.Model):
+    __tablename__ = 'messages'
+    id = db.Column(db.Integer, primary_key=True)
+    creation_time = db.Column(db.BigInteger)
+    expiry_time = db.Column(db.BigInteger)
+    content_type = db.Column(db.Text)
+    content = db.Column(db.Text)
+    user_id = db.Column(db.Integer)
+    location = db.Column(Geometry(geometry_type='POINT', srid=4326))
 
 # Set "homepage" to index.html
 @app.route('/')
@@ -30,7 +37,9 @@ def index():
 @app.route('/drop', methods=['POST'])
 def dropMessage():
     obj = request.json
-    print(obj)
+    print(str(theAnalyzer(obj["content"])))
+    #  db.session.add()
+    #  db.session.commit()
     return str(obj)
 
 # Save e-mail to database and send to success page
