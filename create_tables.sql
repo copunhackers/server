@@ -1,6 +1,8 @@
 -- DROP Tables (For testing purposes)
 DROP TABLE USERS, MESSAGES CASCADE;
 
+CREATE EXTENSION postgis;
+
 CREATE TABLE USERS (
     id              serial,
     name            text,
@@ -14,6 +16,7 @@ CREATE TABLE MESSAGES (
     user_id          int,
     creation_time    bigint,
     expiry_time      bigint,
+    location         geography(POINT,4326),
     PRIMARY KEY (id),
     FOREIGN KEY (user_id) REFERENCES USERS(id)
 );
