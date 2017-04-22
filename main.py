@@ -2,7 +2,7 @@ from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://teal.basilehenry.com/copunhacksDB'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://copunhackers:hack@localhost/copunhackersDB'
 db = SQLAlchemy(app)
 
 # Create our database model
@@ -32,9 +32,9 @@ def prereg():
             reg = User(name)
             db.session.add(reg)
             db.session.commit()
-            return ('Success: ' + reg)
+            return ('Success: ' + str(reg))
     return 'Failure'
 
 if __name__ == '__main__':
     app.debug = True
-    app.run()
+    app.run(host= '0.0.0.0')
