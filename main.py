@@ -7,7 +7,7 @@ db = SQLAlchemy(app)
 
 # Create our database model
 class User(db.Model):
-    __tablename__ = "users"
+    __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), unique=True)
 
@@ -17,14 +17,21 @@ class User(db.Model):
     def __repr__(self):
         return '<Name %r>' % self.name
 
+#  class Message(db.Model):
+#      __tablename__ = 'messages'
+#      id = db.Column(db.Integer, primary_key=True)
+#      expiry_time = db.Column(db.BigInteger)
+
 # Set "homepage" to index.html
 @app.route('/')
 def index():
-    return "Hello world"
+    return 'Hello world'
 
-@app.route('/drop', methods=['GET', 'POST'])
+@app.route('/drop', methods=['POST'])
 def dropMessage():
-    return "Droping message"
+    obj = request.json
+    print(obj)
+    return str(obj)
 
 # Save e-mail to database and send to success page
 @app.route('/test', methods=['GET'])
