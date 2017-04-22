@@ -37,13 +37,14 @@ def index():
 @app.route('/drop', methods=['POST'])
 def dropMessage():
     obj = request.json
-    print(str(theAnalyzer(obj["content"])))
+    (msg, allowed) = theAnalyzer(obj["content"])
+    if allowed:
+        print('Add to database')
     #  db.session.add()
     #  db.session.commit()
-    return str(obj)
+    return str(msg, allowed)
 
-# Save e-mail to database and send to success page
-@app.route('/test', methods=['GET'])
+# Save e-mail to database and send to success page@app.route('/test', methods=['GET'])
 def prereg():
     name = None
     if request.method == 'GET':
