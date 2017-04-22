@@ -42,7 +42,7 @@ def dropMessage():
         print('Add to database')
     #  db.session.add()
     #  db.session.commit()
-    return str(msg, allowed)
+    return '("{}",{})'.format(msg, allowed)
 
 # Save e-mail to database and send to success page@app.route('/test', methods=['GET'])
 def prereg():
