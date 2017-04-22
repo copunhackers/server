@@ -3,8 +3,9 @@ from requests.auth import HTTPBasicAuth
 
 
 #This function sends a post request to the ibm watson api,
-#  with the testString parameter, as the payload.
+#with the testString parameter, as the payload.
 #It then get a json object back, which it returns to the caller.
+
 def getAnalyzeJSON(textString):
     payload = {'version': '2016-05-19', 'text': textString}
     r = requests.get('https://gateway.watsonplatform.net/tone-analyzer/api/v3/tone',
