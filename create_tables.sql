@@ -14,3 +14,6 @@ CREATE TABLE MESSAGES (
     lng              float,
     PRIMARY KEY (id)
 );
+
+GRANT ALL PRIVILEGES ON TABLE messages TO copunhackers;
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO copunhackers;
