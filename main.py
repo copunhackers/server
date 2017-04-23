@@ -63,7 +63,7 @@ def gatherMessages():
     msgs = db.session.query(Message).filter(func.abs(Message.lat - obj["latitude"]) < 1).filter(func.abs(Message.lng - obj["longitude"]) < 1 ).filter(Message.expiry_time > unixTime)
     jsonStr = json.dumps(list(m.create_json() for m in msgs))
     print(jsonStr)
-    return json.dumps(jsonStr)
+    return jsonStr
 
 if __name__ == "__main__":
     app.debug = True
