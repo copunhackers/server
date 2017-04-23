@@ -7,18 +7,6 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://copunhackers:hack@localhost/copunhackersDB'
 db = SQLAlchemy(app)
 
-# Create our database model
-class User(db.Model):
-    __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Text)
-
-    def __init__(self, name):
-        self.name = name
-
-    def __repr__(self):
-        return '<Name %r>' % self.name
-
 class Message(db.Model):
     __tablename__ = 'messages'
     id = db.Column(db.Integer, primary_key=True)
@@ -26,8 +14,15 @@ class Message(db.Model):
     expiry_time = db.Column(db.BigInteger)
     content_type = db.Column(db.Text)
     content = db.Column(db.Text)
-    user_id = db.Column(db.Integer)
+    username = db.Column(db.Text)
     location = db.Column(Geometry(geometry_type='POINT', srid=4326))
+    
+    def __init__(self, creation_time, expiry_time, content_type, content, username, lat, lng):
+        self.creation_time = creation_time
+        self.expiry_time = expiry_time
+        self.content_type = content_type
+        self.user_id = user_id
+        self.location = Geometry.from_text("POINT({} {})".format(lng, lat))
 
 # Set "homepage" to index.html
 @app.route('/')
@@ -39,23 +34,24 @@ def dropMessage():
     obj = request.json
     (msg, allowed) = theAnalyzer(obj["content"])
     if allowed:
-        print('Add to database')
+        message = Message(obj["creationTime"], obj["expiryTime"], "text", obj["content"], obj["username"], obj["location"]["latitude"], obj["location"]["longitude"])
+        db.session.add(message)
+        db.session.commit()
+        print('Add to database: ' + str(message))
         return ""
-    #  db.session.add()
-    #  db.session.commit()
     return msg
 
 # Save e-mail to database and send to success page@app.route('/test', methods=['GET'])
-def prereg():
-    name = None
-    if request.method == 'GET':
-        name = request.args['name']
-        if not db.session.query(User).filter(User.name == name).count():
-            reg = User(name)
-            db.session.add(reg)
-            db.session.commit()
-            return ('Success: ' + str(reg))
-    return 'Failure'
+#  def prereg():
+#      name = None
+#      if request.method == 'GET':
+#          name = request.args['name']
+#          if not db.session.query(User).filter(User.name == name).count():
+#              reg = User(name)
+#              db.session.add(reg)
+#              db.session.commit()
+#              return ('Success: ' + str(reg))
+#      return 'Failure'
 
 if __name__ == '__main__':
     app.debug = True
