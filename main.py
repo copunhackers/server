@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 #  from geoalchemy2.shape import from_shape
 #  from geoalchemy2.functions import ST_Distance_Sphere
 from stringAnalyzer.analyzer import theAnalyzer
+from sqlalchemy import func
 #  from shapely.geometry import Point
 import json
 
@@ -61,7 +62,7 @@ def dropMessage():
 @app.route("/message", methods=["POST"])
 def gatherMessages():
     obj = request.json
-    msgs = db.session.query(Message).filter(abs(Message.lat - obj["latitude"]) < 1).filter(abs(Message.lng - obj["longitude"]) < 1 )
+    msgs = db.session.query(Message).filter(func.abs(Message.lat - obj["latitude"]) < 1).filter(func.abs(Message.lng - obj["longitude"]) < 1 )
             #  .filter(Message.expiry_time > obj["currentTime"])
     return json.dumps(map(Message.to_json, msgs))
 
