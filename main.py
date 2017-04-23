@@ -59,8 +59,8 @@ def dropMessage():
 @app.route("/message", methods=["POST"])
 def gatherMessages():
     obj = request.json
-    current_location = from_shape(Point(obj["longitude"], obj["latitude"]), srid=2249)
-    msgs = db.session.query(Message).filter(ST_Distance_Sphere(Message.location, current_location) < 1000)
+    #  current_location = from_shape(Point(obj["longitude"], obj["latitude"]), srid=2249)
+    msgs = db.session.query(Message) # .filter(ST_Distance_Sphere(Message.location, current_location) < 1000)
     return json.dumps(map(Message.to_json, msgs))
 
 # Save e-mail to database and send to success page@app.route("/test", methods=["GET"])
