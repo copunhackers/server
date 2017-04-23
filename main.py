@@ -21,7 +21,7 @@ class Message(db.Model):
         self.creation_time = creation_time
         self.expiry_time = expiry_time
         self.content_type = content_type
-        self.user_id = user_id
+        self.username = username
         self.location = Geometry.from_text("POINT({} {})".format(lng, lat))
 
 # Set "homepage" to index.html
