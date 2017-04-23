@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from geoalchemy2.types import Geometry
+from geoalchemy2.elements import WKTElement
 from stringAnalyzer.analyzer import theAnalyzer
 
 app = Flask(__name__)
@@ -22,7 +23,7 @@ class Message(db.Model):
         self.expiry_time = expiry_time
         self.content_type = content_type
         self.username = username
-        self.location = Geometry.from_text("POINT({} {})".format(lng, lat))
+        self.location = WKTElement("POINT({} {})".format(lng, lat))
 
 # Set "homepage" to index.html
 @app.route('/')
