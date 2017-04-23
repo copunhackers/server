@@ -9,6 +9,8 @@ CREATE TABLE MESSAGES (
     username         text,
     creation_time    bigint,
     expiry_time      bigint,
-    location         geography,
+--    location         geography,
+    lat              float,
+    lng              float,
     PRIMARY KEY (id)
 );

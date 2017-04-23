@@ -1,10 +1,10 @@
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
-from geoalchemy2.types import Geometry
-from geoalchemy2.shape import from_shape
-from geoalchemy2.functions import ST_Distance_Sphere
+#  from geoalchemy2.types import Geometry
+#  from geoalchemy2.shape import from_shape
+#  from geoalchemy2.functions import ST_Distance_Sphere
 from stringAnalyzer.analyzer import theAnalyzer
-from shapely.geometry import Point
+#  from shapely.geometry import Point
 import json
 
 app = Flask(__name__)
@@ -19,14 +19,16 @@ class Message(db.Model):
     content_type = db.Column(db.Text)
     content = db.Column(db.Text)
     username = db.Column(db.Text)
-    location = db.Column(Geometry(geometry_type="POINT", srid=4326))
+    lat = db.Column(db.Float)
+    lng = db.Column(db.Float)
     
     def __init__(self, creation_time, expiry_time, content_type, content, username, lat, lng):
         self.creation_time = creation_time
         self.expiry_time = expiry_time
         self.content_type = content_type
         self.username = username
-        self.location = from_shape(Point(lng, lat), srid=2249)
+        self.lat = lat
+        self.lng = lng
 
     def to_json(self):
         obj = {}
@@ -36,8 +38,8 @@ class Message(db.Model):
         obj["content"] = self.content
         obj["username"] = self.username
         obj["location"] = {}
-        obj["location"]["latitude"] = self.location.y
-        obj["location"]["longitude"] = self.location.x
+        obj["location"]["latitude"] = self.lat
+        obj["location"]["longitude"] = self.lng
 
 # Set "homepage" to index.html
 @app.route("/")
@@ -59,8 +61,8 @@ def dropMessage():
 @app.route("/message", methods=["POST"])
 def gatherMessages():
     obj = request.json
-    #  current_location = from_shape(Point(obj["longitude"], obj["latitude"]), srid=2249)
-    msgs = db.session.query(Message) # .filter(ST_Distance_Sphere(Message.location, current_location) < 1000)
+    msgs = db.session.query(Message).filter(abs(Message.lat - obj["latitude"]) < 1).filter(abs(Message.lng - obj["longitude"]) < 1 )
+            #  .filter(Message.expiry_time > obj["currentTime"])
     return json.dumps(map(Message.to_json, msgs))
 
 # Save e-mail to database and send to success page@app.route("/test", methods=["GET"])
