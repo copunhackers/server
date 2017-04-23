@@ -40,9 +40,10 @@ def dropMessage():
     (msg, allowed) = theAnalyzer(obj["content"])
     if allowed:
         print('Add to database')
+        return ""
     #  db.session.add()
     #  db.session.commit()
-    return '("{}",{})'.format(msg, allowed)
+    return msg
 
 # Save e-mail to database and send to success page@app.route('/test', methods=['GET'])
 def prereg():
