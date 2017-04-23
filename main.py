@@ -1,11 +1,7 @@
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
-#  from geoalchemy2.types import Geometry
-#  from geoalchemy2.shape import from_shape
-#  from geoalchemy2.functions import ST_Distance_Sphere
 from stringAnalyzer.analyzer import theAnalyzer
 from sqlalchemy import func
-#  from shapely.geometry import Point
 import json
 
 app = Flask(__name__)
@@ -31,7 +27,7 @@ class Message(db.Model):
         self.lat = lat
         self.lng = lng
 
-    def to_json(self):
+    def create_json(self):
         obj = {}
         obj["creationTime"] = self.creation_time
         obj["expiryTime"] = self.expiry_time
@@ -62,9 +58,8 @@ def dropMessage():
 @app.route("/message", methods=["POST"])
 def gatherMessages():
     obj = request.json
-    msgs = db.session.query(Message).filter(func.abs(Message.lat - obj["latitude"]) < 1).filter(func.abs(Message.lng - obj["longitude"]) < 1 )
-            #  .filter(Message.expiry_time > obj["currentTime"])
-    return json.dumps(map(Message.to_json, msgs))
+    msgs = db.session.query(Message).filter(func.abs(Message.lat - obj["location"]["latitude"]) < 1).filter(func.abs(Message.lng - obj["location"]["longitude"]) < 1 ).filter(Message.expiry_time > obj["currentTime"])
+    return json.dumps(map(Message.create_json, msgs))
 
 # Save e-mail to database and send to success page@app.route("/test", methods=["GET"])
 #  def prereg():
