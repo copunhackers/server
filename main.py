@@ -1,9 +1,10 @@
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from geoalchemy2.types import Geometry
-from geoalchemy2.elements import WKBElement
+from geoalchemy2.shape import from_shape
 from geoalchemy2.functions import ST_Distance_Sphere
 from stringAnalyzer.analyzer import theAnalyzer
+from shapely.geometry import Point
 import json
 
 app = Flask(__name__)
@@ -25,7 +26,7 @@ class Message(db.Model):
         self.expiry_time = expiry_time
         self.content_type = content_type
         self.username = username
-        self.location = WKBElement("POINT({} {})".format(lng, lat), 2249)
+        self.location = from_shape(Point(lng, lat), srid=2249)
 
     def to_json(self):
         obj = {}
@@ -58,7 +59,7 @@ def dropMessage():
 @app.route("/message", methods=["POST"])
 def gatherMessages():
     obj = request.json
-    current_location = WKBElement("POINT({} {})".format(obj["longitude"], obj["latitude"]), 2249)
+    current_location = from_shape(Point(obj["longitude"], obj["latitude"]), srid=2249)
     msgs = db.session.query(Message).filter(ST_Distance_Sphere(Message.location, current_location) < 1000)
     return json.dumps(map(Message.to_json, msgs))
 
