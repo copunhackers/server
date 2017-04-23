@@ -1,4 +1,4 @@
-DROP TABLE USERS, MESSAGES CASCADE;
+DROP TABLE MESSAGES;
 
 CREATE EXTENSION postgis;
 
@@ -10,5 +10,5 @@ CREATE TABLE MESSAGES (
     creation_time    bigint,
     expiry_time      bigint,
     location         geography,
-    PRIMARY KEY (id),
+    PRIMARY KEY (id)
 );
