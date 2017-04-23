@@ -59,19 +59,7 @@ def dropMessage():
 def gatherMessages():
     obj = request.json
     msgs = db.session.query(Message).filter(func.abs(Message.lat - obj["location"]["latitude"]) < 1).filter(func.abs(Message.lng - obj["location"]["longitude"]) < 1 ).filter(Message.expiry_time > obj["currentTime"])
-    return json.dumps(map(Message.create_json, msgs))
-
-# Save e-mail to database and send to success page@app.route("/test", methods=["GET"])
-#  def prereg():
-#      name = None
-#      if request.method == "GET":
-#          name = request.args["name"]
-#          if not db.session.query(User).filter(User.name == name).count():
-#              reg = User(name)
-#              db.session.add(reg)
-#              db.session.commit()
-#              return ("Success: " + str(reg))
-#      return "Failure"
+    return json.dumps(map(lambda m: m.create_json(), msgs))
 
 if __name__ == "__main__":
     app.debug = True
